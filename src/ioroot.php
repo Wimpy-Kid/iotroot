@@ -19,6 +19,7 @@ class ioroot {
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($this->curl, CURLOPT_HEADER, false);
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
     }
 
     public function microTime() {
