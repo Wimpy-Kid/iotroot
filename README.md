@@ -11,12 +11,12 @@ $ composer require cherrylu/iotroot
 ### 使用
 
 ```php
-use Cherrylu\iotroot\ioroot;
+use Cherrylu\iotroot\iotroot;
 use Cherrylu\iotroot\encrypter;
 
-$ioroot = new ioroot('input-your-client-id-here', 'input-your-key-here');
+$iotroot = new iotroot('input-your-client-id-here', 'input-your-key-here');
 
-$templates = $ioroot->getTemplates();
+$templates = $iotroot->getTemplates();
 
 var_dump([
     'client_id' => encrypter::getClientId(),
