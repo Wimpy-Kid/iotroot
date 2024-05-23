@@ -5,7 +5,7 @@
 ### 安装
 
 ```shell
-$ composer require ioroot/encrypter
+$ composer require cherrylu/iotroot
 ```
 
 ### 使用
