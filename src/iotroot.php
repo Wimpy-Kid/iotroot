@@ -2,7 +2,7 @@
 
 namespace Cherrylu\iotroot;
 
-class ioroot {
+class iotroot {
 
     private $domain = 'https://www.iotroot.com/interface';
     private $curl;

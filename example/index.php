@@ -1,17 +1,17 @@
 <?php
 
-require_once '../src/ioroot.php';
+require_once '../src/iotroot.php';
 require_once '../src/encrypter.php';
 
-use Cherrylu\iotroot\ioroot;
+use Cherrylu\iotroot\iotroot;
 use Cherrylu\iotroot\encrypter;
 
 
-$ecode = new ioroot('input-your-client-id-here', 'input-your-key-here');
+$iotroot = new iotroot('input-your-client-id-here', 'input-your-key-here');
 
-$templates = $ecode->getTemplates();
+$templates = $iotroot->getTemplates();
 
-dd([
+var_dump([
     'client_id' => encrypter::getClientId(),
     'key' => encrypter::getKey(),
     'time_stamp' => encrypter::getTimeStamp(),
