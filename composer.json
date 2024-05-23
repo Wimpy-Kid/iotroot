@@ -1,0 +1,21 @@
+{
+    "name": "cherrylu/iotroot",
+    "description": "php version api for iotroot platform which run by 国家物联网标识管理中心",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Cherrylu\\iotroot\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "cfy",
+            "email": "1002161225@qq.com"
+        }
+    ],
+    "require": {
+      "ext-openssl": "*",
+      "ext-curl": "*",
+      "ext-json": "*"
+    }
+}
