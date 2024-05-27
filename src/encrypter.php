@@ -21,15 +21,22 @@ final class encrypter {
      *
      * @return string
      */
-    public static function encrypt($clientId, $timeStamp, $key = '') {
+    public static function encrypt($clientId, $key = '') {
         self::$clientId   = $clientId;
-        self::$timeStamp  = $timeStamp;
+        self::$timeStamp  = self::microTime();
         self::$key        = $key;
-        self::$seed       = $clientId . $timeStamp;
+        self::$seed       = $clientId . self::$timeStamp;
         self::$signString = self::toHex(self::encryptBytes());
 
         return self::$signString;
     }
+
+    private static function microTime() {
+        list($usec, $sec) = explode(" ", microtime());
+
+        return $sec . substr($usec, 2, 3);
+    }
+
 
     public static function getSignString() {
         return self::$signString;

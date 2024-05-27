@@ -6,13 +6,14 @@ class iotroot {
 
     private $domain = 'https://www.iotroot.com/interface';
     private $curl;
-    private $params = [];
+    private $params;
 
     public function __construct($clientId, $key) {
         // init curl request to $curl
         $this->curl = curl_init();
 
-        encrypter::encrypt($clientId, $this->microTime(), $key);
+        encrypter::encrypt($clientId, $key);
+        $this->params = $this->combineSignString();
 
         // set curl options
         curl_setopt($this->curl, CURLOPT_URL, $this->domain);
@@ -22,12 +23,6 @@ class iotroot {
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
     }
 
-    public function microTime() {
-        list($usec, $sec) = explode(" ", microtime());
-
-        return $sec . substr($usec, 2, 3);
-    }
-
     /**
      * 企业获取通用模板
      *
@@ -35,7 +30,7 @@ class iotroot {
      * @throws \Exception
      */
     public function getTemplates() {
-        curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/queryTemplateInfo/" . $this->combineSignString());
+        curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/queryTemplateInfo/" . $this->params);
 
         return $this->processRes(curl_exec($this->curl));
     }
@@ -49,14 +44,14 @@ class iotroot {
      * @throws \Exception
      */
     public function getProductStatus($returnId) {
-        curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/queryProductStatus/" . $this->combineSignString());
+        curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/queryProductStatus/" . $this->params);
 
         return $this->processRes(curl_exec($this->curl));
     }
 
     /**
      * 分批次回传
-     * 
+     *
      * @param string $code
      * @param array $codeList
      * @param array $moduleList
@@ -65,14 +60,14 @@ class iotroot {
      * @throws \Exception
      */
     public function returnProductBatch($code, $codeList, $moduleList) {
-        curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/returnProductBatch/" . $this->combineSignString());
+        curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/returnProductBatch/" . $this->params);
         curl_setopt($this->curl, CURLOPT_POST, 1);
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode([
-            'code' => $code,
-            'codeList' => $codeList,
+            'code'       => $code,
+            'codeList'   => $codeList,
             'moduleList' => $moduleList
         ]));
-        
+
         return $this->processRes(curl_exec($this->curl));
     }
 
@@ -88,7 +83,7 @@ class iotroot {
      * @return array
      */
     public function returnProductInfo($name, $typeNumber, $templateId, $base64, $typeList) {
-        $data   = [
+        $data = [
             'productTypeNumber' => $typeNumber,
             'templeteId'        => $templateId,
             'productName'       => $name,
@@ -97,17 +92,17 @@ class iotroot {
         ];
 
         // post $data as json
-        curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/returnProduct/" . $this->combineSignString());
+        curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/returnProduct/" . $this->params);
         curl_setopt($this->curl, CURLOPT_POST, 1);
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode($data));
-        
+
         return $this->processRes(curl_exec($this->curl));
     }
 
-    private function combineSignString(){
+    private function combineSignString() {
         return 'clientId=' . encrypter::getClientId() . '/timeStamp=' . encrypter::getTimeStamp() . '/sign=' . encrypter::getSignString();
     }
-    
+
     /**
      * @param $result
      *
@@ -125,12 +120,12 @@ class iotroot {
 
         // check if json decode is successful
         if ( json_last_error() !== JSON_ERROR_NONE ) {
-            file_put_contents(date('Y-m-d') . '.log', $result . PHP_EOL, FILE_APPEND);
+            file_put_contents('iotroot_' . date('Y-m-d') . '.log', $result . PHP_EOL, FILE_APPEND);
             throw new \Exception('响应内容有误，请联系管理员检查');
         }
 
         $this->resetCurl();
-        
+
         return $jsonRes;
     }
 
@@ -138,7 +133,7 @@ class iotroot {
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, '');
     }
-    
+
     public function __destruct() {
         curl_close($this->curl);
     }
