@@ -21,9 +21,9 @@ class iotroot {
         curl_setopt($this->curl, CURLOPT_HEADER, false);
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-//        curl_setopt($this->curl, CURLOPT_PROXY, "127.0.0.1");
-//        curl_setopt($this->curl, CURLOPT_PROXYPORT, 8888);
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, [ 'Content-Type: application/json' ]);
+        //        curl_setopt($this->curl, CURLOPT_PROXY, "127.0.0.1");
+        //        curl_setopt($this->curl, CURLOPT_PROXYPORT, 8888);
     }
 
     /**
@@ -101,7 +101,7 @@ class iotroot {
 
         return $this->processRes(curl_exec($this->curl));
     }
-    
+
     /**
      * 编码申请
      *
@@ -122,28 +122,27 @@ class iotroot {
 
     /**
      * 从模板中过滤出必要的产品信息字段
-     * 
+     *
      * @param $template
      *
      * @return array
      */
     public function productItemFilter($template) {
         $typeList = [];
-        foreach ( $template as $result ) {
-            $num = 1;
-            for ( $i = 0; $i < 20; $i++) {
-                $index = 'tableList' . $num++;
-                if ( !isset($result[$index]) ) {
-                    break 1;
-                }
-                foreach ( $result[$index] as $item ) {
-                    $temp = $this->_productItemFilter($item);
-                    if ( !empty($temp['list']) ) {
-                        $typeList[] = $temp;
-                    }
+        $num      = 1;
+        for ( $i = 0; $i < 20; $i ++ ) {
+            $index = 'tableList' . $num ++;
+            if ( !isset($template[ $index ]) ) {
+                break 1;
+            }
+            foreach ( $template[ $index ] as $item ) {
+                $temp = $this->_productItemFilter($item);
+                if ( !empty($temp['list']) ) {
+                    $typeList[] = $temp;
                 }
             }
         }
+
         return $typeList;
     }
 
@@ -151,7 +150,7 @@ class iotroot {
         $list = [];
         if ( $tab['isProduct'] === '1' ) {
             foreach ( $tab['detailList'] as $item ) {
-                if ( $item['isProduct'] === '1' && $item['required'] === '1') {
+                if ( $item['isProduct'] === '1' && $item['required'] === '1' ) {
                     $list[] = [ 'name' => $item['name'] ];
                 }
             }
@@ -162,28 +161,28 @@ class iotroot {
             'list' => $list
         ];
     }
-    
+
     /**
      * 编码获取
-     * 
+     *
      * @param string $fileId
      *
      * @return array
      * @throws \Exception
      */
     public function queryEcodes($fileId) {
-        $codes = [];
+        $codes  = [];
         $params = 'clientId=' . encrypter::getClientId() . '/fileId=' . $fileId . '/timeStamp=' . encrypter::getTimeStamp() . '/sign=' . encrypter::getSignString();
         curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/download/" . $params);
-        
+
         // res is a zip stream
         $res = curl_exec($this->curl);
-        
+
         // check curl response status
         if ( curl_getinfo($this->curl, CURLINFO_HTTP_CODE) !== 200 ) {
             throw new \Exception('下载失败');
         }
-        
+
 
         // Save the zip stream to a temporary file
         $tmpFile = tempnam(sys_get_temp_dir(), 'zip');
@@ -193,10 +192,10 @@ class iotroot {
         $zip = new \ZipArchive;
         if ( $zip->open($tmpFile) === true ) {
             for ( $i = 0; $i < $zip->numFiles; $i ++ ) {
-//                $filename    = $zip->getNameIndex($i);
+                //                $filename    = $zip->getNameIndex($i);
                 $fileContent = $zip->getFromIndex($i);
                 $fileContent = trim($fileContent);
-                $codes = array_merge($codes, explode("\n", $fileContent));
+                $codes       = array_merge($codes, explode("\n", $fileContent));
             }
             $zip->close();
         } else {
@@ -205,13 +204,13 @@ class iotroot {
 
         // Delete the temporary file
         unlink($tmpFile);
-        
+
         return $codes;
     }
 
     /**
      * 编码回退
-     * 
+     *
      * @param array | string $ecodes
      *
      * @return array
