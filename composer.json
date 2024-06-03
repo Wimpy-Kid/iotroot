@@ -16,6 +16,8 @@
     "require": {
       "ext-openssl": "*",
       "ext-curl": "*",
-      "ext-json": "*"
+      "ext-json": "*",
+      "ext-zip": "*",
+      "ext-zlib": "*"
     }
 }
