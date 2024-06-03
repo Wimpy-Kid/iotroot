@@ -129,9 +129,8 @@ class iotroot {
      */
     public function productItemFilter($template) {
         $typeList = [];
-        $num      = 1;
-        for ( $i = 0; $i < 20; $i ++ ) {
-            $index = 'tableList' . $num ++;
+        for ( $i = 1; $i < 20; $i ++ ) {
+            $index = 'tableList' . $i;
             if ( !isset($template[ $index ]) ) {
                 break 1;
             }
