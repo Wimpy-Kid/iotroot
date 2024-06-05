@@ -120,14 +120,15 @@ class iotroot {
         return $this->processRes(curl_exec($this->curl));
     }
 
+
     /**
      * 从模板中过滤出必要的产品信息字段
      *
      * @param $template
-     *
+     * @param $onlyRequired
      * @return array
      */
-    public function productItemFilter($template) {
+    public function productItemFilter($template, $onlyRequired = true) {
         $typeList = [];
         for ( $i = 1; $i < 20; $i ++ ) {
             $index = 'tableList' . $i;
@@ -135,7 +136,7 @@ class iotroot {
                 break 1;
             }
             foreach ( $template[ $index ] as $item ) {
-                $temp = $this->_templateItemFilter($item);
+                $temp = $this->_templateItemFilter($item, true, $onlyRequired);
                 if ( !empty($temp['list']) ) {
                     $typeList[] = $temp;
                 }
@@ -144,15 +145,15 @@ class iotroot {
 
         return $typeList;
     }
-    
+
     /**
      * 从模板中过滤出必要的非产品信息字段
      *
      * @param $template
-     *
+     * @param $onlyRequired
      * @return array
      */
-    public function nonProductItemFilter($template) {
+    public function nonProductItemFilter($template, $onlyRequired = true) {
         $typeList = [];
         for ( $i = 1; $i < 20; $i ++ ) {
             $index = 'tableList' . $i;
@@ -160,7 +161,7 @@ class iotroot {
                 break 1;
             }
             foreach ( $template[ $index ] as $item ) {
-                $temp = $this->_templateItemFilter($item, false);
+                $temp = $this->_templateItemFilter($item, false, $onlyRequired);
                 if ( !empty($temp['list']) ) {
                     $typeList[] = $temp;
                 }
@@ -170,11 +171,11 @@ class iotroot {
         return $typeList;
     }
 
-    protected function _templateItemFilter($tab, $isProduct = true) {
+    protected function _templateItemFilter($tab, $isProduct = true, $onlyRequired = true) {
         $list = [];
         if ( ($tab['isProduct'] === '1') === $isProduct ) {
             foreach ( $tab['detailList'] as $item ) {
-                if ( ($item['isProduct'] === '1') === $isProduct && $item['required'] === '1' ) {
+                if ( ($item['isProduct'] === '1') === $isProduct && (!$onlyRequired || $item['required'] === '1')) {
                     $list[] = [ 'name' => $item['name'] ];
                 }
             }
@@ -185,7 +186,6 @@ class iotroot {
             'list' => $list
         ];
     }
-
     /**
      * 编码获取
      *
