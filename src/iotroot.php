@@ -67,7 +67,7 @@ class iotroot {
         curl_setopt($this->curl, CURLOPT_POST, 1);
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode([
             'code'       => $productCode,
-            'codeList'   => $codeList,
+            'ecodeList'   => $codeList,
             'moduleList' => $moduleList
         ]));
 
@@ -135,7 +135,32 @@ class iotroot {
                 break 1;
             }
             foreach ( $template[ $index ] as $item ) {
-                $temp = $this->_productItemFilter($item);
+                $temp = $this->_templateItemFilter($item);
+                if ( !empty($temp['list']) ) {
+                    $typeList[] = $temp;
+                }
+            }
+        }
+
+        return $typeList;
+    }
+    
+    /**
+     * 从模板中过滤出必要的非产品信息字段
+     *
+     * @param $template
+     *
+     * @return array
+     */
+    public function nonProductItemFilter($template) {
+        $typeList = [];
+        for ( $i = 1; $i < 20; $i ++ ) {
+            $index = 'tableList' . $i;
+            if ( !isset($template[ $index ]) ) {
+                break 1;
+            }
+            foreach ( $template[ $index ] as $item ) {
+                $temp = $this->_templateItemFilter($item, false);
                 if ( !empty($temp['list']) ) {
                     $typeList[] = $temp;
                 }
@@ -145,11 +170,11 @@ class iotroot {
         return $typeList;
     }
 
-    protected function _productItemFilter($tab) {
+    protected function _templateItemFilter($tab, $isProduct = true) {
         $list = [];
-        if ( $tab['isProduct'] === '1' ) {
+        if ( ($tab['isProduct'] === '1') === $isProduct ) {
             foreach ( $tab['detailList'] as $item ) {
-                if ( $item['isProduct'] === '1' && $item['required'] === '1' ) {
+                if ( ($item['isProduct'] === '1') === $isProduct && $item['required'] === '1' ) {
                     $list[] = [ 'name' => $item['name'] ];
                 }
             }
