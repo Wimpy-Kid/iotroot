@@ -110,7 +110,7 @@ $returnId = '1717052801031872134201286892242';
 $res = $iotroot->queryProductStatus($returnId);
 ```
 
-### <span id="ecodeBatchReturn">批次回传-绑定编码</span>
+### <span id="returnBatch">批次回传-绑定编码</span>
 
 ```php
 
