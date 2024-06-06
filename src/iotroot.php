@@ -64,7 +64,7 @@ class iotroot {
      */
     public function ecodeBatchReturn($productCode, $codeList, $moduleList) {
         curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/ecodeBatchReturn/" . $this->params);
-        curl_setopt($this->curl, CURLOPT_POST, 1);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode([
             'code'       => $productCode,
             'ecodeList'   => $codeList,
@@ -96,7 +96,7 @@ class iotroot {
 
         // post $data as json
         curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/returnProduct/" . $this->params);
-        curl_setopt($this->curl, CURLOPT_POST, 1);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode($data));
 
         return $this->processRes(curl_exec($this->curl));
@@ -246,7 +246,7 @@ class iotroot {
         }
 
         curl_setopt($this->curl, CURLOPT_URL, $this->domain . "/company/fallbackByEcode/" . $this->params);
-        curl_setopt($this->curl, CURLOPT_POST, 1);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode([ 'ecodes' => $ecodes ]));
 
         return $this->processRes(curl_exec($this->curl));
