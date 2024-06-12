@@ -60,12 +60,20 @@ $res = $iotroot->queryTemplateInfo();
 ### <span id="getTemplateItems">过滤模板字段</span>
 
 ```php
-/** string 模板ID，从获取模板(queryTemplateInfo)获取 */
-$templates = $iotroot->queryTemplateItems();
+// 获取通用模板数据
+$templates = $iotroot->queryTemplateInfo();
 
-$productItems = $iotroot->productItemFilter($templates['result'][0]);
+// 必填的产品字段
+$requiredProductItems = $iotroot->productItemFilter($templates['result'][0]);
 
-$nonProductItems = $iotroot->nonProductItemFilter($templates['result'][0]);
+// 所有产品字段
+$allProductItems = $iotroot->productItemFilter($templates['result'][0], false);
+
+// 必填的非产品字段
+$requiredNonProductItems = $iotroot->nonProductItemFilter($templates['result'][0]);
+
+// 所有的非产品字段
+$allNonProductItems = $iotroot->nonProductItemFilter($templates['result'][0], false);
 ```
 
 ### <span id="returnProduct">产品回传-上传产品</span>
@@ -73,10 +81,11 @@ $nonProductItems = $iotroot->nonProductItemFilter($templates['result'][0]);
 ```php
 
 /** string 模板ID，从获取模板(queryTemplateInfo)获取 */
-$templateId = '54893135bf1f49c18c56e8577d68b5d3';
+$templateId  = '54893135bf1f49c18c56e8577d68b5d3';
 $productName = '辰砂手串';
-$typeNumber = '4208';
-$img      = base64_encode(file_get_contents('img.jpg'));
+$typeNumber  = '4208';
+$img         = base64_encode(file_get_contents('img.jpg'));
+
 /** array 产品信息，productItemFilter获取产品信息所需字段 */
 $typeList = [
     [
