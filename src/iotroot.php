@@ -67,7 +67,7 @@ class iotroot {
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode([
             'code'       => $productCode,
-            'ecodeList'   => $codeList,
+            'ecodeList'  => $codeList,
             'moduleList' => $moduleList
         ]));
 
@@ -78,19 +78,21 @@ class iotroot {
      * 产品库回传
      *
      * @param string $name
-     * @param string $typeNumber
+     * @param string $typeNumber 
      * @param string $templateId
-     * @param string $base64
+     * @param string | string[] $productImgBase64
      * @param array $typeList
+     * @param bool  $ifLogo 是否使用企业logo作为商品图片
      *
      * @return array
      */
-    public function returnProduct($name, $typeNumber, $templateId, $base64, $typeList) {
+    public function returnProduct($name, $typeNumber, $templateId, $productImgBase64, $typeList, $ifLogo = false) {
         $data = [
             'productTypeNumber' => $typeNumber,
             'templeteId'        => $templateId,
             'productName'       => $name,
-            'photos'            => is_array($base64) ? $base64 : [ $base64 ],
+            'ifLogo'            => $ifLogo,
+            'photos'            => is_array($productImgBase64) ? $productImgBase64 : [ $productImgBase64 ],
             'productTypelist'   => $typeList
         ];
 
@@ -171,6 +173,49 @@ class iotroot {
         return $typeList;
     }
 
+
+    /**
+     * 企业Logo、营业执照数据补录接口
+     *
+     * @param string $logoBase64 企业logo图片的base64编码
+     * @param string $licenseBase64 企业营业执照图片的base64编码
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function tempCompanyData($logoBase64 = '', $licenseBase64 = '') {
+        $this->url = "/company/tempCompanyData/";
+        curl_setopt($this->curl, CURLOPT_URL, $this->domain . $this->url . $this->combineSignString());
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode([
+            'companyLogo'            => $logoBase64,
+            'companyBusinessLicense' => $licenseBase64
+        ]));
+
+        return $this->processRes(curl_exec($this->curl));
+    }
+
+    /**
+     * 产品图片数据补录接口
+     *
+     * @param string $productCode 产品编码
+     * @param string $photoBase64 产品图片的base64编码
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function tempProductData($productCode, $photoBase64) {
+        $this->url = "/company/tempProductData/";
+        curl_setopt($this->curl, CURLOPT_URL, $this->domain . $this->url . $this->combineSignString());
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode([
+            'code'         => $productCode,
+            'productPhoto' => $photoBase64
+        ]));
+
+        return $this->processRes(curl_exec($this->curl));
+    }
+    
     protected function _templateItemFilter($tab, $isProduct = true, $onlyRequired = true) {
         $list = [];
         if ( ($tab['isProduct'] === '1') === $isProduct ) {

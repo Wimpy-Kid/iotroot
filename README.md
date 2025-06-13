@@ -19,6 +19,8 @@ $ composer require cherrylu/iotroot
 - [产品回传-上传产品](#returnProduct)
 - [查询产品审核状态](#productStatus)
 - [批次回传-绑定编码](#returnBatch)
+- [企业Logo、营业执照数据补录](#tempCompanyData)
+- [产品图片数据补录](#tempProductData)
 
 ### <span id="declare">初始声明</span>
 
@@ -39,7 +41,7 @@ $res = $iotroot->ecodeApply(1000);
 
 ```php
 /** string 编码申请(ecodeApply)后返回的文件ID */
-$fileId = '1717052801031872134201286892242';
+$fileId = '123123';
 $res = $iotroot->queryEcodes($fileId);
 ```
 
@@ -47,7 +49,7 @@ $res = $iotroot->queryEcodes($fileId);
 
 ```php
 /** string 编码下载(queryEcodes)返回的数据中获取 */
-$ecodes = '201286892242831508353086013003369';
+$ecodes = '123123';
 $res = $iotroot->releaseEcodes($ecodes);
 ```
 
@@ -81,7 +83,7 @@ $allNonProductItems = $iotroot->nonProductItemFilter($templates['result'][0], fa
 ```php
 
 /** string 模板ID，从获取模板(queryTemplateInfo)获取 */
-$templateId  = '54893135bf1f49c18c56e8577d68b5d3';
+$templateId  = '123123';
 $productName = '辰砂手串';
 $typeNumber  = '4208';
 $img         = base64_encode(file_get_contents('img.jpg'));
@@ -115,7 +117,7 @@ $res = $iotroot->returnProduct($productName, $typeNumber, $templateId, $img, $ty
 
 ```php
 /** string 产品回传(returnProduct)后返回的returnId */
-$returnId = '1717052801031872134201286892242';
+$returnId = '123123';
 $res = $iotroot->queryProductStatus($returnId);
 ```
 
@@ -163,4 +165,26 @@ $moduleList = [
 ];
 
 $iotroot->ecodeBatchReturn($productCode, $ecodes, $moduleList);
+```
+
+### <span id="tempCompanyData">企业Logo、营业执照数据补录</span>
+
+```php
+/** string 产品回传(returnProduct)后返回的returnId */
+$logoBase64 = base64_encode(file_get_contents('logo.jpg')); // 可以为空字符
+$licenseBase64 = base64_encode(file_get_contents('license.jpg')); // 可以为空字符
+$res = $iotroot->queryProductStatus($logoBase64, $licenseBase64);
+
+```
+
+### <span id="tempProductData">产品图片数据补录</span>
+
+##### <span style="color:red;">切勿泄露产品code码，有漏洞可以利用产品code码篡改数据</span>
+
+```php
+/** string 产品回传(returnProduct)后返回的returnId，也可以通过查看网页上产品列表api返回的数据获取，目前没有api能直接获取所有产品的code */
+$productCode = '123123123123';
+$imgBase64 = base64_encode(file_get_contents('img.jpg'));
+$res = $res = $iotroot->tempProductData($productCode, $imgBase64);
+
 ```
