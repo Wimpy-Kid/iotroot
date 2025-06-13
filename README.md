@@ -126,10 +126,10 @@ $res = $iotroot->queryProductStatus($returnId);
 ```php
 
 /** string 产品审核状态(queryProductStatus)返回的数据中获取 */
-$productCode = '702e10d0f61b416b862af91e85f7017a';
+$productCode = '123123';
 
 /** array 编码下载(queryEcodes)返回的数据中获取 */
-$ecodes = ['201286892242831508353086013003369'];
+$ecodes = ['123123'];
 
 /** array 从nonProductItemFilter获取所需字段 */
 $moduleList = [
